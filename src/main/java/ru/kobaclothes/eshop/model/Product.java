@@ -31,13 +31,16 @@ public class Product {
     private ProductColor color;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Image> images;
+    private List<ProductImage> productImages;
+
+    @OneToOne(mappedBy = "product")
+    private ProductStatistics productStatistics;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductAuditLog> productAuditLogs;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
-    @OneToOne(mappedBy = "product")
-    private ProductStatistics productStatistics;
 }
 
