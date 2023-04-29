@@ -1,13 +1,9 @@
 package ru.kobaclothes.eshop.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "images")
 public class Image {

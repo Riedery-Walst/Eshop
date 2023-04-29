@@ -1,8 +1,11 @@
 package ru.kobaclothes.eshop.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
+@Table(name = "home_images")
 public class HomeImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

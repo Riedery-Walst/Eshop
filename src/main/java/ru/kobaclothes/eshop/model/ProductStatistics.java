@@ -1,15 +1,9 @@
 package ru.kobaclothes.eshop.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "products_statistics")
 public class ProductStatistics {
@@ -17,8 +11,9 @@ public class ProductStatistics {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "ProductStatistics", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Product> product;
+    @OneToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(name = "visitors_count")
     private Long  visitorsCount;

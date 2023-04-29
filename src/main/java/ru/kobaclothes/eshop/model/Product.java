@@ -1,17 +1,12 @@
 package ru.kobaclothes.eshop.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product {
@@ -41,5 +36,8 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToOne(mappedBy = "product")
+    private ProductStatistics productStatistics;
 }
 
