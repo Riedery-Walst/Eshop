@@ -27,5 +27,5 @@ public class ProductAuditLog {
 
     @Column(name = "action")
     @Enumerated(EnumType.STRING)
-    private String action;
+    private ProductStatus productStatus;
 }

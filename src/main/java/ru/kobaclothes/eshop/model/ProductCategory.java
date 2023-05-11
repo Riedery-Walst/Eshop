@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "categories")
-public class Category {
+public class ProductCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,5 +16,5 @@ public class Category {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    private Category parent;
+    private ProductCategory parent;
 }

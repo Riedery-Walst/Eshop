@@ -1,5 +1,5 @@
 package ru.kobaclothes.eshop.model;
 
-public enum Action {
+public enum ProductStatus {
     updated, created, deleted
 }

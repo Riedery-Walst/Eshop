@@ -3,7 +3,7 @@ package ru.kobaclothes.eshop.service.implementations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kobaclothes.eshop.dao.ProductAuditLogRepository;
-import ru.kobaclothes.eshop.model.Action;
+import ru.kobaclothes.eshop.model.ProductStatus;
 import ru.kobaclothes.eshop.model.Product;
 import ru.kobaclothes.eshop.model.ProductAuditLog;
 import ru.kobaclothes.eshop.model.User;
@@ -21,10 +21,10 @@ public class ProductAuditLogServiceImpl implements ProductAuditLogService {
     }
 
     @Override
-    public void logProductAction(Product product, Action action, User currentUser) {
+    public void logProductAction(Product product, ProductStatus productStatus, User currentUser) {
         ProductAuditLog auditLog = new ProductAuditLog();
         auditLog.setProduct(product);
-        auditLog.setAction(action.toString());
+        auditLog.setProductStatus(productStatus);
         auditLog.setUser(currentUser);
         auditLog.setTimestamp(new Date());
         productAuditLogRepository.save(auditLog);

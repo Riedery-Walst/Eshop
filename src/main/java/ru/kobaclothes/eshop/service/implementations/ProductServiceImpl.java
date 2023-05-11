@@ -3,7 +3,7 @@ package ru.kobaclothes.eshop.service.implementations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kobaclothes.eshop.dao.ProductRepository;
-import ru.kobaclothes.eshop.model.Action;
+import ru.kobaclothes.eshop.model.ProductStatus;
 import ru.kobaclothes.eshop.model.Product;
 import ru.kobaclothes.eshop.model.User;
 import ru.kobaclothes.eshop.service.interfaces.ProductAuditLogService;
@@ -34,20 +34,20 @@ public class ProductServiceImpl implements ProductService {
     public void createProduct(Product product) {
         User currentUser = userService.getCurrentUser();
         productRepository.save(product);
-        productAuditLogService.logProductAction(product, Action.created, currentUser);
+        productAuditLogService.logProductAction(product, ProductStatus.created, currentUser);
     }
 
     @Override
     public void updateProduct(Product product) {
         User currentUser = userService.getCurrentUser();
         productRepository.save(product);
-        productAuditLogService.logProductAction(product, Action.updated, currentUser);
+        productAuditLogService.logProductAction(product, ProductStatus.updated, currentUser);
     }
 
     @Override
     public void deleteProduct(Product product) {
         User currentUser = userService.getCurrentUser();
         productRepository.delete(product);
-        productAuditLogService.logProductAction(product, Action.deleted, currentUser);
+        productAuditLogService.logProductAction(product, ProductStatus.deleted, currentUser);
     }
 }

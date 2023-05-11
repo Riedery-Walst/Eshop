@@ -29,6 +29,8 @@ public class DeliveryInfo {
     @Column(name = "postcode")
     private String postcode;
 
-    @OneToOne(mappedBy = "delivery_info")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
 }

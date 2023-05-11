@@ -3,6 +3,8 @@ package ru.kobaclothes.eshop.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "users")
@@ -17,10 +19,14 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
+    
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy = "users")
-    private DeliveryInfo deliveryInfo;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<DeliveryInfo> deliveryInfo;
 }
