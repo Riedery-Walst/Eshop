@@ -2,7 +2,7 @@ package ru.kobaclothes.eshop.service.implementations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.kobaclothes.eshop.dao.ProductAuditLogRepository;
+import ru.kobaclothes.eshop.repository.ProductAuditLogRepository;
 import ru.kobaclothes.eshop.model.ProductStatus;
 import ru.kobaclothes.eshop.model.Product;
 import ru.kobaclothes.eshop.model.ProductAuditLog;

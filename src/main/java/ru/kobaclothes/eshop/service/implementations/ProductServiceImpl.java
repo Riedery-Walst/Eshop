@@ -1,11 +1,10 @@
 package ru.kobaclothes.eshop.service.implementations;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.kobaclothes.eshop.dao.ProductRepository;
-import ru.kobaclothes.eshop.model.ProductStatus;
 import ru.kobaclothes.eshop.model.Product;
+import ru.kobaclothes.eshop.model.ProductStatus;
 import ru.kobaclothes.eshop.model.User;
+import ru.kobaclothes.eshop.repository.ProductRepository;
 import ru.kobaclothes.eshop.service.interfaces.ProductAuditLogService;
 import ru.kobaclothes.eshop.service.interfaces.ProductService;
 import ru.kobaclothes.eshop.service.interfaces.UserService;
@@ -18,7 +17,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductAuditLogService productAuditLogService;
     private final UserService userService;
 
-    @Autowired
     public ProductServiceImpl(ProductRepository productRepository, ProductAuditLogService productAuditLogService, UserService userService) {
         this.productRepository = productRepository;
         this.productAuditLogService = productAuditLogService;
