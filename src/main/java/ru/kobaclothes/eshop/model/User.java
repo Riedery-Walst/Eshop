@@ -30,4 +30,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DeliveryInfo> deliveryInfo;
 
+    @Column(name = "enabled")
+    private boolean enabled;
+
+    public User() {
+        this.enabled=false;
+    }
+
 }

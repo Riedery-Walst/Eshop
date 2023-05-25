@@ -4,7 +4,7 @@ import ru.kobaclothes.eshop.dto.UserDTO;
 import ru.kobaclothes.eshop.model.User;
 
 public interface UserService {
-    User createUser(UserDTO userDto);
+    Boolean registerNewUserAccount(UserDTO userDTO);
 
     User getCurrentUser();
 

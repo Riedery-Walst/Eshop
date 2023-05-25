@@ -21,7 +21,7 @@ public class SecurityConfiguration {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/", "/home", "product/**").permitAll()
+                .requestMatchers("/", "/home", "product/**", "/registration/**").permitAll()
                 .requestMatchers("/cms/**", "/home/**").hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers("/cms/users/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()

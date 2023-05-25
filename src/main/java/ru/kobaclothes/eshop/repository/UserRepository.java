@@ -7,4 +7,6 @@ import ru.kobaclothes.eshop.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
+
+    User findByActivationToken(String activationToken);
 }

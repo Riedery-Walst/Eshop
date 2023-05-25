@@ -1,15 +1,24 @@
 package ru.kobaclothes.eshop.dto;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import ru.kobaclothes.eshop.validation.email.ValidEmail;
+import ru.kobaclothes.eshop.validation.password.PasswordMatches;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@PasswordMatches
 public class UserDTO {
 
-    private String email;
+    @ValidEmail
+    @NotNull
+    @NotEmpty
+        private String email;
 
+    @NotNull
+    @NotEmpty
+    @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
     private String password;
+    private String matchingPassword;
 }
