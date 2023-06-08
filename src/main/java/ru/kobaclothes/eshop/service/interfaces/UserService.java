@@ -4,11 +4,18 @@ import ru.kobaclothes.eshop.dto.UserDTO;
 import ru.kobaclothes.eshop.model.User;
 
 public interface UserService {
-    Boolean registerNewUserAccount(UserDTO userDTO);
+    void registerNewUserAccount(UserDTO userDTO);
 
-    User getCurrentUser();
+    void verifyEmail(String code);
 
-    void loginUser(UserDTO UserDto);
+    void changePassword(String email, String newPassword, String currentPassword);
 
-    void logoutUser();
+    void initiatePasswordReset(String email);
+
+    void resetPassword(String token, String newPassword);
+
+    User getCurrentUserName();
+
+    User authenticate(String email, String password);
+
 }

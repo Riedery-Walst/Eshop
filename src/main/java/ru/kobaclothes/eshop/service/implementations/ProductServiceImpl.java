@@ -30,21 +30,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void createProduct(Product product) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = userService.getCurrentUserName();
         productRepository.save(product);
         productAuditLogService.logProductAction(product, ProductStatus.created, currentUser);
     }
 
     @Override
     public void updateProduct(Product product) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = userService.getCurrentUserName();
         productRepository.save(product);
         productAuditLogService.logProductAction(product, ProductStatus.updated, currentUser);
     }
 
     @Override
     public void deleteProduct(Product product) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = userService.getCurrentUserName();
         productRepository.delete(product);
         productAuditLogService.logProductAction(product, ProductStatus.deleted, currentUser);
     }

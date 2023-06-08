@@ -30,11 +30,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DeliveryInfo> deliveryInfo;
 
-    @Column(name = "enabled")
-    private boolean enabled;
+    @Column(name = "verified")
+    private boolean verified;
 
-    public User() {
-        this.enabled=false;
-    }
+    @Column(name = "verification_code")
+    private String verificationCode;
 
 }
