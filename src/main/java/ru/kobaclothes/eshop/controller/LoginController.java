@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.kobaclothes.eshop.exception.InvalidTokenException;
-import ru.kobaclothes.eshop.exception.UserNotFoundException;
 import ru.kobaclothes.eshop.service.interfaces.UserService;
 
 @Controller
@@ -33,13 +30,8 @@ public class LoginController {
 
     // Handler for submitting the forgot password form
     @PostMapping("/forgot-password")
-    public String submitForgotPasswordForm(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
-        try {
-            userService.initiatePasswordReset(email);
-            redirectAttributes.addFlashAttribute("successMessage", "Password reset email sent");
-        } catch (UserNotFoundException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        }
+    public String submitForgotPasswordForm(@RequestParam("email") String email) {
+        userService.initiatePasswordReset(email);
         return "redirect:/forgot-password";
     }
 
@@ -54,14 +46,8 @@ public class LoginController {
     @PostMapping("/reset-password")
     public String submitResetPasswordForm(
             @RequestParam("token") String token,
-            @RequestParam("newPassword") String newPassword, RedirectAttributes redirectAttributes) {
-        try {
-            userService.resetPassword(token, newPassword);
-            redirectAttributes.addFlashAttribute("successMessage", "Password reset successful");
-        } catch (InvalidTokenException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/forgot-password";
-        }
+            @RequestParam("newPassword") String newPassword) {
+        userService.resetPassword(token, newPassword);
         return "redirect:/login";
     }
 }

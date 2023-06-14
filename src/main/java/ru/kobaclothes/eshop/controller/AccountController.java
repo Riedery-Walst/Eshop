@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.kobaclothes.eshop.dto.UserDTO;
+import ru.kobaclothes.eshop.exception.PasswordMismatchException;
+import ru.kobaclothes.eshop.request.ChangePasswordRequest;
 import ru.kobaclothes.eshop.service.interfaces.UserService;
 
 @Controller
@@ -18,9 +18,8 @@ public class AccountController {
     }
 
     @GetMapping("/verify/{code}")
-    public String verifyEmail(@PathVariable("code") String code, RedirectAttributes redirectAttributes) {
+    public String verifyEmail(@PathVariable("code") String code) {
         userService.verifyEmail(code);
-        redirectAttributes.addFlashAttribute("successMessage", "Password changed successfully.");
         return "redirect:/account";
     }
 
@@ -34,10 +33,11 @@ public class AccountController {
     @PostMapping("/security")
     public String changePassword(
             HttpSession session,
-            @ModelAttribute("password") @Valid UserDTO userDTO,
-            RedirectAttributes redirectAttributes) {
-        userService.changePassword((String) session.getAttribute("email"), userDTO.getNewPassword(), userDTO.getCurrentPassword());
-        redirectAttributes.addFlashAttribute("successMessage", "Password changed successfully.");
+            @ModelAttribute("password") @Valid ChangePasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getMatchingPassword())) {
+            throw new PasswordMismatchException("Passwords do not match.");
+        }
+        userService.changePassword((String) session.getAttribute("email"), request.getNewPassword(), request.getCurrentPassword());
         return "redirect:/account";
     }
 

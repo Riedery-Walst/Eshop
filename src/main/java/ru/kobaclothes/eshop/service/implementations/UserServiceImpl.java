@@ -5,6 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kobaclothes.eshop.dto.UserDTO;
 import ru.kobaclothes.eshop.exception.InvalidTokenException;
+import ru.kobaclothes.eshop.exception.PasswordMismatchException;
+import ru.kobaclothes.eshop.exception.UserAlreadyExistException;
 import ru.kobaclothes.eshop.exception.UserNotFoundException;
 import ru.kobaclothes.eshop.model.PasswordResetToken;
 import ru.kobaclothes.eshop.model.Role;
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerNewUserAccount(UserDTO userDTO) {
         if (userRepository.findByEmail(userDTO.getEmail()) != null) {
-            throw new RuntimeException("There is an account with that email address: " + userDTO.getEmail());
+            throw new UserAlreadyExistException("There is an account with that email address: " + userDTO.getEmail());
         }
         User user = new User();
         user.setEmail(userDTO.getEmail());
@@ -71,7 +73,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User not found");
         }
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new RuntimeException("Current password is not correct");
+            throw new PasswordMismatchException("Current password is not correct");
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
