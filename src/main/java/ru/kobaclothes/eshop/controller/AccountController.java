@@ -3,9 +3,10 @@ package ru.kobaclothes.eshop.controller;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kobaclothes.eshop.exception.PasswordMismatchException;
-import ru.kobaclothes.eshop.request.ChangePasswordRequest;
+import ru.kobaclothes.eshop.request.PasswordChangeRequest;
 import ru.kobaclothes.eshop.service.interfaces.UserService;
 
 @Controller
@@ -17,15 +18,12 @@ public class AccountController {
         this.userService = userService;
     }
 
-    @GetMapping("/verify/{code}")
-    public String verifyEmail(@PathVariable("code") String code) {
-        userService.verifyEmail(code);
-        return "redirect:/account";
-    }
+
 
     // Handler for displaying the user security form
     @GetMapping("/security")
-    public String showUserSecurity() {
+    public String showUserSecurity(Model model) {
+        model.addAttribute("password", new PasswordChangeRequest());
         return "security";
     }
 
@@ -33,7 +31,7 @@ public class AccountController {
     @PostMapping("/security")
     public String changePassword(
             HttpSession session,
-            @ModelAttribute("password") @Valid ChangePasswordRequest request) {
+            @ModelAttribute("password") @Valid PasswordChangeRequest request) {
         if (!request.getNewPassword().equals(request.getMatchingPassword())) {
             throw new PasswordMismatchException("Passwords do not match.");
         }

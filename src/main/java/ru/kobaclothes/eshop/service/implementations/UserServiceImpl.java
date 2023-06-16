@@ -4,20 +4,14 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kobaclothes.eshop.dto.UserDTO;
-import ru.kobaclothes.eshop.exception.InvalidTokenException;
-import ru.kobaclothes.eshop.exception.PasswordMismatchException;
-import ru.kobaclothes.eshop.exception.UserAlreadyExistException;
-import ru.kobaclothes.eshop.exception.UserNotFoundException;
-import ru.kobaclothes.eshop.model.PasswordResetToken;
-import ru.kobaclothes.eshop.model.Role;
-import ru.kobaclothes.eshop.model.User;
-import ru.kobaclothes.eshop.model.UserStatus;
-import ru.kobaclothes.eshop.repository.PasswordResetTokenRepository;
+import ru.kobaclothes.eshop.exception.*;
+import ru.kobaclothes.eshop.model.*;
 import ru.kobaclothes.eshop.repository.UserRepository;
+import ru.kobaclothes.eshop.repository.UserTokenRepository;
+import ru.kobaclothes.eshop.request.PasswordChangeRequest;
 import ru.kobaclothes.eshop.service.interfaces.UserService;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,13 +21,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-    private final PasswordResetTokenRepository tokenRepository;
+    private final UserTokenRepository userTokenRepository;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService, PasswordResetTokenRepository tokenRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService, UserTokenRepository userTokenRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
-        this.tokenRepository = tokenRepository;
+        this.userTokenRepository = userTokenRepository;
     }
 
     @Override
@@ -44,26 +38,75 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getNewPassword()));
-        user.setUserStatus(UserStatus.ACTIVE);
+        user.setActiveStatus(true);
         user.setRole(Role.ROLE_USER);
         user.setVerified(false);
 
-        String verificationCode = generateCode();
-        user.setVerificationCode(verificationCode);
-        emailService.sendConfirmationEmail(user.getEmail(), verificationCode);
+        initiateEmailVerification(user);
 
         userRepository.save(user);
 
     }
 
     @Override
-    public void verifyEmail(String code) {
-        Optional<User> optionalUser = userRepository.findByVerificationCode(code);
-        optionalUser.ifPresent(user -> {
+    public void initiateEmailVerification(User user) {
+        String verificationToken = generateToken();
+        UserToken emailVerificationToken = new UserToken();
+        emailVerificationToken.setToken(verificationToken);
+        emailVerificationToken.setUser(user);
+        emailVerificationToken.setExpiryDate(LocalDateTime.now().plusHours(24)); // Токен будет действителен в течение 24 часов
+        emailVerificationToken.setUserTokenType(UserTokenType.EMAIL_VERIFICATION);
+        userTokenRepository.save(emailVerificationToken);
+
+        emailService.sendConfirmationEmail(user.getEmail(), verificationToken);
+    }
+
+    @Override
+    public void initiatePasswordReset(User user) {
+        String resetToken = generateToken();
+        UserToken passwordResetToken = new UserToken();
+        passwordResetToken.setToken(resetToken);
+        passwordResetToken.setUser(user);
+        passwordResetToken.setExpiryDate(LocalDateTime.now().plusHours(24)); // Токен будет действителен в течение 24 часов
+        passwordResetToken.setUserTokenType(UserTokenType.PASSWORD_RESET);
+        userTokenRepository.save(passwordResetToken);
+
+        emailService.sendForgotPassword(user.getEmail(), resetToken);
+    }
+
+    @Override
+    public void setPasswordByToken(String token, PasswordChangeRequest passwordChangeRequest) {
+        UserToken userToken = userTokenRepository.findByTokenAndUserTokenType(token, UserTokenType.PASSWORD_RESET);
+        if (userToken != null && userToken.getExpiryDate().isAfter(LocalDateTime.now())) {
+            User user = userToken.getUser();
+
+            if (passwordEncoder.matches(passwordChangeRequest.getCurrentPassword(), user.getPassword())) {
+                if (passwordChangeRequest.getNewPassword().equals(passwordChangeRequest.getMatchingPassword())) {
+                    user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+                    userRepository.save(user);
+                    userTokenRepository.delete(userToken);
+                } else {
+                    throw new InvalidPasswordException("New password and matching password do not match.");
+                }
+            } else {
+                throw new InvalidPasswordException("Current password is incorrect.");
+            }
+        } else {
+            throw new InvalidTokenException("Invalid or expired password reset token.");
+        }
+    }
+
+    @Override
+    public void verifyAccountByToken(String token) {
+        UserToken userToken = userTokenRepository.findByTokenAndUserTokenType(token, UserTokenType.EMAIL_VERIFICATION);
+        if (userToken != null && userToken.getExpiryDate().isAfter(LocalDateTime.now())) {
+            User user = userToken.getUser();
             user.setVerified(true);
-            user.setVerificationCode(null);
             userRepository.save(user);
-        });
+            userTokenRepository.delete(userToken);
+        } else {
+            throw new InvalidTokenException("Недействительный или просроченный токен для верификации аккаунта.");
+        }
     }
 
     @Override
@@ -80,42 +123,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    @Override
-    public void initiatePasswordReset(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UserNotFoundException("User not found");
-        }
-
-        // Generate a random token
-        String token = generateCode();
-
-        // Create a PasswordResetToken and associate it with the user
-        PasswordResetToken resetToken = new PasswordResetToken(user, token);
-        tokenRepository.save(resetToken);
-
-        // Send the reset token via email or SMS
-        emailService.sendForgotPassword(user.getEmail(), token);
-    }
-
-    @Override
-    public void resetPassword(String token, String newPassword) {
-        // Find the PasswordResetToken by token
-        PasswordResetToken resetToken = tokenRepository.findByToken(token);
-        if (resetToken == null || resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new InvalidTokenException("Invalid or expired token");
-        }
-
-        // Get the associated user
-        User user = resetToken.getUser();
-
-        // Update the user's password
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-
-        // Delete the used token
-        tokenRepository.delete(resetToken);
-    }
+    
 
     @Override
     public User getCurrentUserName() {
@@ -123,18 +131,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User authenticate(String email, String password) {
-        User user = userRepository.findByEmail(email);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
-        }
-        return null;
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    private String generateCode() {
+    private String generateToken() {
         UUID uuid = UUID.randomUUID();
         // Extract the first 6 characters from the UUID
-        return uuid.toString().replaceAll("-", "").substring(0, 6);
+        return uuid.toString().replaceAll("-", "").substring(0, 4);
     }
+
 
 }

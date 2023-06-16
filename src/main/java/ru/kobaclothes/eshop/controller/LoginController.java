@@ -3,7 +3,6 @@ package ru.kobaclothes.eshop.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kobaclothes.eshop.service.interfaces.UserService;
@@ -29,11 +28,6 @@ public class LoginController {
     }
 
     // Handler for submitting the forgot password form
-    @PostMapping("/forgot-password")
-    public String submitForgotPasswordForm(@RequestParam("email") String email) {
-        userService.initiatePasswordReset(email);
-        return "redirect:/forgot-password";
-    }
 
     // Handler for displaying the password reset form
     @GetMapping("/reset-password")
@@ -42,12 +36,5 @@ public class LoginController {
         return "reset-password";
     }
 
-    // Handler for submitting the password reset form
-    @PostMapping("/reset-password")
-    public String submitResetPasswordForm(
-            @RequestParam("token") String token,
-            @RequestParam("newPassword") String newPassword) {
-        userService.resetPassword(token, newPassword);
-        return "redirect:/login";
-    }
+
 }

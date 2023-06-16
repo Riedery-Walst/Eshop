@@ -1,3 +1,4 @@
+/*
 package ru.kobaclothes.eshop.controller;
 
 import jakarta.validation.Valid;
@@ -41,3 +42,4 @@ public class RegistrationController {
         return new ModelAndView("home", "user", userDTO);
     }
 }
+*/

@@ -19,9 +19,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    @Column(name = "active_status")
+    boolean activeStatus;
     
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
@@ -32,8 +31,5 @@ public class User {
 
     @Column(name = "verified")
     private boolean verified;
-
-    @Column(name = "verification_code")
-    private String verificationCode;
 
 }
