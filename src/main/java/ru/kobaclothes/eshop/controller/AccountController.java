@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kobaclothes.eshop.exception.PasswordMismatchException;
-import ru.kobaclothes.eshop.request.PasswordChangeRequest;
+import ru.kobaclothes.eshop.dto.PasswordChangeDTO;
 import ru.kobaclothes.eshop.service.interfaces.UserService;
 
 @Controller
@@ -23,7 +23,7 @@ public class AccountController {
     // Handler for displaying the user security form
     @GetMapping("/security")
     public String showUserSecurity(Model model) {
-        model.addAttribute("password", new PasswordChangeRequest());
+        model.addAttribute("password", new PasswordChangeDTO());
         return "security";
     }
 
@@ -31,7 +31,7 @@ public class AccountController {
     @PostMapping("/security")
     public String changePassword(
             HttpSession session,
-            @ModelAttribute("password") @Valid PasswordChangeRequest request) {
+            @ModelAttribute("password") @Valid PasswordChangeDTO request) {
         if (!request.getNewPassword().equals(request.getMatchingPassword())) {
             throw new PasswordMismatchException("Passwords do not match.");
         }

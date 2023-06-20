@@ -1,4 +1,4 @@
-package ru.kobaclothes.eshop.request;
+package ru.kobaclothes.eshop.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import lombok.Data;
 import ru.kobaclothes.eshop.validation.password.ValidPassword;
 
 @Data
-public class PasswordChangeRequest {
+public class PasswordChangeDTO {
     @NotNull
     @NotEmpty
     @ValidPassword

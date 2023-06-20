@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -24,7 +25,10 @@ public class User {
     
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Set<Role> roles;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private AccountInfo accountInfo;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<DeliveryInfo> deliveryInfo;

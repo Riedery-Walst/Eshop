@@ -1,15 +1,16 @@
 package ru.kobaclothes.eshop.service.interfaces;
 
 import ru.kobaclothes.eshop.model.Product;
+import ru.kobaclothes.eshop.request.ProductRequest;
 
 import java.util.List;
 
 public interface ProductService {
     List<Product> getAllProducts();
 
-    void createProduct(Product product);
+    void createProduct();
 
-    void updateProduct(Product product);
+    void updateProduct(ProductRequest productRequest, Long productId, String email);
 
-    void deleteProduct(Product product);
+    void deleteProduct(Long productId, String email);
 }

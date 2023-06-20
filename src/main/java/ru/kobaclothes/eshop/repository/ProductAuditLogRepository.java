@@ -6,4 +6,5 @@ import ru.kobaclothes.eshop.model.ProductAuditLog;
 
 @Repository
 public interface ProductAuditLogRepository extends JpaRepository<ProductAuditLog, Long> {
+    ProductAuditLog getProductAuditLogByProductId(Long productId);
 }

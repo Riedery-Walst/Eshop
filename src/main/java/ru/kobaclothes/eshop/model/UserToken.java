@@ -25,7 +25,8 @@ public class UserToken {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDateTime expiryDate;
+    @Column(name = "expire_date")
+    private LocalDateTime expireDate;
 
     @Column(name = "user_token_type")
     @Enumerated(EnumType.STRING)

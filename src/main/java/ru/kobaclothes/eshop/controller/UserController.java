@@ -6,21 +6,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.kobaclothes.eshop.dto.PasswordChangeDTO;
 import ru.kobaclothes.eshop.dto.UserDTO;
 import ru.kobaclothes.eshop.exception.InvalidTokenException;
 import ru.kobaclothes.eshop.exception.PasswordMismatchException;
 import ru.kobaclothes.eshop.exception.UserAlreadyExistException;
-import ru.kobaclothes.eshop.model.User;
-import ru.kobaclothes.eshop.request.PasswordChangeRequest;
+import ru.kobaclothes.eshop.exception.UserNotFoundException;
+import ru.kobaclothes.eshop.service.interfaces.AccountInfoService;
 import ru.kobaclothes.eshop.service.interfaces.UserService;
 
 @Controller
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final AccountInfoService accountInfoService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AccountInfoService accountInfoService) {
         this.userService = userService;
+        this.accountInfoService = accountInfoService;
     }
 
     @GetMapping("/signup")
@@ -56,20 +59,20 @@ public class UserController {
 
     @PostMapping("/initiate-password-reset")
     public String initiatePasswordReset(@RequestParam("email") String email, Model model) {
-        User user = userService.getUserByEmail(email);
-        if (user != null) {
-            userService.initiatePasswordReset(user);
+        try {
+            userService.initiatePasswordReset(email);
             model.addAttribute("message", "Ссылка для сброса пароля отправлена на вашу электронную почту.");
             return "message";
-        } else {
-            model.addAttribute("error",     "Пользователь с указанной электронной почтой не найден.");
+        } catch (UserNotFoundException e) {
+            model.addAttribute("error", "Пользователь с указанной электронной почтой не найден.");
             return "error";
         }
     }
 
+
     @PostMapping("/reset-password")
     public String resetPassword(@RequestParam("token") String token,
-                                @ModelAttribute("Password") @Valid PasswordChangeRequest request,
+                                @ModelAttribute("Password") @Valid PasswordChangeDTO request,
                                 Model model) {
         if (!request.getNewPassword().equals(request.getMatchingPassword())) {
             model.addAttribute("error", "Passwords do not match.");
@@ -87,7 +90,7 @@ public class UserController {
 
     @PostMapping("/security")
     public String changePassword(HttpSession session,
-                                 @ModelAttribute("password") @Valid PasswordChangeRequest request,
+                                 @ModelAttribute("password") @Valid PasswordChangeDTO request,
                                  Model model) {
         if (!request.getNewPassword().equals(request.getMatchingPassword())) {
             model.addAttribute("error", "Passwords do not match.");
@@ -102,5 +105,21 @@ public class UserController {
             return "error";
         }
     }
+
+
+/*    @PostMapping("/account/update")
+    public String updateAccountInfo(HttpServletRequest request,
+                                    @RequestParam("birthDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date birthDate,
+                                    @RequestParam("gender") Gender gender) {
+        HttpSession session = request.getSession();
+        String email = (String) session.getAttribute("email");
+
+        if (email != null) {
+            accountInfoService.setAccountInfo(email, birthDate, gender);
+            return "Account information updated successfully";
+        } else {
+            return "Email not found in session";
+        }
+    }*/
 }
 

@@ -3,7 +3,7 @@ package ru.kobaclothes.eshop.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -14,16 +14,14 @@ public class ProductAuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "account_info_full_name")
+    private String accountInfoFullName;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @Column(name = "product_name")
+    private String productName;
 
-    @Column(name = "timestamp")
-    private Date timestamp;
+    @Column(name = "date")
+    private LocalDateTime updated;
 
     @Column(name = "action")
     @Enumerated(EnumType.STRING)
