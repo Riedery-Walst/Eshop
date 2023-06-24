@@ -8,7 +8,10 @@ import java.math.BigDecimal;
 public class ProductRequest {
     private String name;
     private String description;
-    private int count;
+    private BigDecimal count;
     private BigDecimal price;
     private String composition;
+    private String category;
+    public String CategoryParentName;
+    public String CategoryName;
 }

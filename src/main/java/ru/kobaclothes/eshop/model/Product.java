@@ -21,7 +21,7 @@ public class Product {
     private String description;
 
     @Column(name = "count")
-    private Integer count;
+    private BigDecimal count;
     
     @Column(name = "price")
     private BigDecimal price;

@@ -10,21 +10,23 @@ import java.util.Date;
 
 @Data
 public class AccountInfoRequest {
+    @NotNull
     private Date birthDate;
+    @NotNull
     private Gender gender;
 
     @NotNull
     @NotEmpty
-    @Size(min = 2, max = 20, message = "Password must be between 6 and 20 characters")
+    @Size(min = 2, max = 20, message = "First Name must be between 2 and 20 characters")
     private String firstName;
 
     @NotNull
     @NotEmpty
-    @Size(min = 2, max = 20, message = "Password must be between 6 and 20 characters")
+    @Size(min = 2, max = 20, message = "Last name must be between 2 and 20 characters")
     private String lastName;
 
     @NotNull
     @NotEmpty
-    @Size(min = 2, max = 20, message = "Password must be between 6 and 20 characters")
+    @Size(min = 2, max = 20, message = "Patronymic must be between 2 and 20 characters")
     private String patronymic;
 }

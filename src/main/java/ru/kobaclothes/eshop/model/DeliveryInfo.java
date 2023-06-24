@@ -29,6 +29,9 @@ public class DeliveryInfo {
     @Column(name = "postcode")
     private String postcode;
 
+    @OneToOne
+    private Order order;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

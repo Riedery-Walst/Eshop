@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +27,7 @@ public class UserToken {
     private User user;
 
     @Column(name = "expire_date")
+    @CreationTimestamp
     private LocalDateTime expireDate;
 
     @Column(name = "user_token_type")

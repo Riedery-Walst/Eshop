@@ -2,6 +2,8 @@ package ru.kobaclothes.eshop.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +22,10 @@ public class ProductAuditLog {
     @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "date")
+    @CreationTimestamp
+    private LocalDateTime created;
+
+    @UpdateTimestamp
     private LocalDateTime updated;
 
     @Column(name = "action")

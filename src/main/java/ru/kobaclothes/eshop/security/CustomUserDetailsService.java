@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
 
-        Set<Role> roles = user.getRoles(); // Assuming the roles are retrieved from the database
+        Set<Role> roles = user.getRoles();
         return new CustomUserDetails(user.getEmail(), user.getPassword(), new HashSet<>(roles));
     }
 }
