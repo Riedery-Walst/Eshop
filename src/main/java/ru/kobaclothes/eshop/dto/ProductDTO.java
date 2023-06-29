@@ -1,17 +1,16 @@
-package ru.kobaclothes.eshop.request;
+package ru.kobaclothes.eshop.dto;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
-public class ProductRequest {
+public class ProductDTO {
     private String name;
     private String description;
-    private BigDecimal count;
     private BigDecimal price;
     private String composition;
     private String category;
-    public String CategoryParentName;
-    public String CategoryName;
+    private String CategoryParentName;
+    private String CategoryName;
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Service
-public class ProductImageServiceImp extends ProductImageService {
+public class ProductImageServiceImp implements ProductImageService {
     private final ProductImageRepository productImageRepository;
 
     public ProductImageServiceImp(ProductImageRepository productImageRepository) {

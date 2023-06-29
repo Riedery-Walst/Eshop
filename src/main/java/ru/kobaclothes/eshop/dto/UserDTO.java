@@ -11,7 +11,6 @@ import ru.kobaclothes.eshop.validation.password.ValidPassword;
 @Data
 @PasswordMatches
 public class UserDTO {
-
     @ValidEmail
     @NotNull
     @NotEmpty

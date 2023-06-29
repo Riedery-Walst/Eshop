@@ -23,5 +23,9 @@ public class OrderDetails {
 
     private BigDecimal amount;
 
+    @ManyToOne
+    @JoinColumn(name = "discount_id")
+    private Discount discount;
+
     private BigDecimal price;
 }

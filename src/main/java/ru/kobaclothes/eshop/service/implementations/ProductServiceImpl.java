@@ -8,7 +8,7 @@ import ru.kobaclothes.eshop.model.*;
 import ru.kobaclothes.eshop.repository.ProductCategoryRepository;
 import ru.kobaclothes.eshop.repository.ProductRepository;
 import ru.kobaclothes.eshop.repository.UserRepository;
-import ru.kobaclothes.eshop.request.ProductRequest;
+import ru.kobaclothes.eshop.dto.ProductDTO;
 import ru.kobaclothes.eshop.service.interfaces.ProductAuditLogService;
 import ru.kobaclothes.eshop.service.interfaces.ProductImageService;
 import ru.kobaclothes.eshop.service.interfaces.ProductService;
@@ -44,18 +44,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct(ProductRequest productRequest, Long productId, String email, MultipartFile[] images) throws ImageUploadException {
+    public void updateProduct(ProductDTO productDTO, Long productId, String email, MultipartFile[] images) throws ImageUploadException {
         Product product = productRepository.findProductById(productId);
         if (product == null) {
             throw new ProductNotFoundException("Product not found with ID: " + productId);
         }
 
-        ProductCategory category = productCategoryRepository.findProductCategoryByName(productRequest.getCategory());
+        ProductCategory category = productCategoryRepository.findProductCategoryByName(productDTO.getCategory());
         if (category == null) {
             throw new ProductCategoryNotFoundException("Product category not found");
         }
 
-        Product existingProduct = productRepository.findByName(productRequest.getName());
+        Product existingProduct = productRepository.findByName(productDTO.getName());
         if (existingProduct != null && !existingProduct.getId().equals(productId)) {
             throw new DuplicateProductException("Product with the same name already exists");
         }
@@ -69,17 +69,15 @@ public class ProductServiceImpl implements ProductService {
         if (accountInfo == null || accountInfo.getFirstName() == null || accountInfo.getLastName() == null) {
             throw new InvalidAccountInfoException("Full name not found");
         }
+        productImageService.uploadImages(product, images);
 
         category.getProducts().add(product);
         product.setProductCategory(category);
 
-        productImageService.uploadImages(product, images);
-
-        product.setName(productRequest.getName());
-        product.setDescription(productRequest.getDescription());
-        product.setCount(productRequest.getCount());
-        product.setPrice(productRequest.getPrice());
-        product.setComposition(productRequest.getComposition());
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setComposition(productDTO.getComposition());
 
         if (product.getProductAuditLogs() == null) {
             productAuditLogService.logProductAction(product.getName(), accountInfo, ProductStatus.CREATED);

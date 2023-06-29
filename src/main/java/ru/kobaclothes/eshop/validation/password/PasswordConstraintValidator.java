@@ -6,7 +6,6 @@ import org.passay.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
@@ -34,16 +33,16 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 
                 // no whitespace
                 new WhitespaceRule()
-
         ));
+
         RuleResult result = validator.validate(new PasswordData(password));
         if (result.isValid()) {
             return true;
         }
+
         List<String> messages = validator.getMessages(result);
 
-        String messageTemplate = messages.stream()
-                .collect(Collectors.joining(","));
+        String messageTemplate = String.join(",", messages);
         context.buildConstraintViolationWithTemplate(messageTemplate)
                 .addConstraintViolation()
                 .disableDefaultConstraintViolation();

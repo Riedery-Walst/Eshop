@@ -1,4 +1,4 @@
-package ru.kobaclothes.eshop.request;
+package ru.kobaclothes.eshop.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import ru.kobaclothes.eshop.model.Gender;
 import java.util.Date;
 
 @Data
-public class AccountInfoRequest {
+public class AccountInfoDTO {
     @NotNull
     private Date birthDate;
     @NotNull

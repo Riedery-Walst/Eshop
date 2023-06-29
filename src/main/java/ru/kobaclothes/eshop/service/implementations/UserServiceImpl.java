@@ -3,6 +3,7 @@ package ru.kobaclothes.eshop.service.implementations;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kobaclothes.eshop.dto.PasswordChangeDTO;
 import ru.kobaclothes.eshop.dto.UserDTO;
 import ru.kobaclothes.eshop.exception.*;
 import ru.kobaclothes.eshop.model.Role;
@@ -11,7 +12,6 @@ import ru.kobaclothes.eshop.model.UserToken;
 import ru.kobaclothes.eshop.model.UserTokenType;
 import ru.kobaclothes.eshop.repository.UserRepository;
 import ru.kobaclothes.eshop.repository.UserTokenRepository;
-import ru.kobaclothes.eshop.dto.PasswordChangeDTO;
 import ru.kobaclothes.eshop.service.interfaces.UserService;
 
 import java.time.LocalDateTime;
@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistException("There is an account with that email address: " + userDTO.getEmail());
         }
         User user = new User();
+
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getNewPassword()));
         user.setActiveStatus(true);
@@ -121,7 +122,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             userTokenRepository.delete(userToken);
         } else {
-            throw new InvalidTokenException("Недействительный или просроченный токен для верификации аккаунта.");
+            throw new InvalidTokenException("Invalid or expired token.");
         }
     }
 

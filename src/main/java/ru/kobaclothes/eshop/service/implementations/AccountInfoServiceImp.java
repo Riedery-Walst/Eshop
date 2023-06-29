@@ -5,7 +5,7 @@ import ru.kobaclothes.eshop.model.AccountInfo;
 import ru.kobaclothes.eshop.model.User;
 import ru.kobaclothes.eshop.repository.AccountInfoRepository;
 import ru.kobaclothes.eshop.repository.UserRepository;
-import ru.kobaclothes.eshop.request.AccountInfoRequest;
+import ru.kobaclothes.eshop.dto.AccountInfoDTO;
 import ru.kobaclothes.eshop.service.interfaces.AccountInfoService;
 
 @Service
@@ -19,7 +19,7 @@ public class AccountInfoServiceImp implements AccountInfoService {
     }
 
     @Override
-    public void setAccountInfo(String email, AccountInfoRequest accountInfoRequest) {
+    public void setAccountInfo(String email, AccountInfoDTO accountInfoDTO) {
         User user = userRepository.findByEmail(email);
         AccountInfo accountInfo = user.getAccountInfo();
 
@@ -28,11 +28,11 @@ public class AccountInfoServiceImp implements AccountInfoService {
             user.setAccountInfo(accountInfo);
         }
 
-        accountInfo.setBirthDate(accountInfoRequest.getBirthDate());
-        accountInfo.setGender(accountInfoRequest.getGender());
-        accountInfo.setFirstName(accountInfoRequest.getFirstName());
-        accountInfo.setLastName(accountInfoRequest.getLastName());
-        accountInfo.setPatronymic(accountInfoRequest.getPatronymic());
+        accountInfo.setBirthDate(accountInfoDTO.getBirthDate());
+        accountInfo.setGender(accountInfoDTO.getGender());
+        accountInfo.setFirstName(accountInfoDTO.getFirstName());
+        accountInfo.setLastName(accountInfoDTO.getLastName());
+        accountInfo.setPatronymic(accountInfoDTO.getPatronymic());
 
         accountInfoRepository.save(accountInfo);
         userRepository.save(user);
