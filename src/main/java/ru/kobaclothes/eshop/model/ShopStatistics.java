@@ -14,8 +14,21 @@ public class ShopStatistics {
     private Long id;
 
     @Column(name = "total_orders_count")
-    private int totalOrdersCount;
+    private BigDecimal totalOrdersCount;
 
-    @Column(name = "toral_revenue")
+    @Column(name = "cost")
+    private BigDecimal cost;
+
+    //value-added tax
+    @Column(name = "total_vax")
+    private BigDecimal vax;
+
+    @Column(name = "total_cost")
+    private BigDecimal totalCost;
+
+    @Column(name = "total_income")
+    private BigDecimal totalIncome;
+
+    @Column(name = "total_revenue")
     private BigDecimal totalRevenue;
 }

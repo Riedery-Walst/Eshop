@@ -20,9 +20,6 @@ public class Product {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "price")
-    private BigDecimal price;
-
     @Column(name = "composition")
     private String composition;
 
@@ -42,5 +39,8 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private ProductCategory productCategory;
+
+    @Column(name = "price")
+    private BigDecimal price;
 }
 

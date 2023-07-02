@@ -1,24 +1,23 @@
 package ru.kobaclothes.eshop.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.kobaclothes.eshop.security.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public SecurityConfiguration(UserDetailsService userDetailsService) {
+    public SecurityConfiguration(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -27,7 +26,7 @@ public class SecurityConfiguration {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/", "/home", "/product/**", "/registration", "/login").permitAll()
+                .requestMatchers("/", "/home", "/product/**", "/api/**", "/login").permitAll()
                 .requestMatchers("/cms/**", "/home/**").hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers("/cms/users/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
@@ -54,10 +53,19 @@ public class SecurityConfiguration {
     }
 
     // When performing basic authorization, Spring Security could get user data from the repository by login.
-    @Autowired
+/*    @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());;
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }*/
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        // Set other authentication provider properties if needed
+        return authProvider;
     }
+
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

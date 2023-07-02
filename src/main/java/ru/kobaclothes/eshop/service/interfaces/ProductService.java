@@ -1,15 +1,18 @@
 package ru.kobaclothes.eshop.service.interfaces;
 
+import org.springframework.web.multipart.MultipartFile;
+import ru.kobaclothes.eshop.exception.ImageUploadException;
 import ru.kobaclothes.eshop.model.Product;
+import ru.kobaclothes.eshop.dto.ProductDTO;
 
 import java.util.List;
 
 public interface ProductService {
     List<Product> getAllProducts();
 
-    void createProduct(Product product);
+    void createProduct();
 
-    void updateProduct(Product product);
+    void updateProduct(ProductDTO productDTO, Long productId, String email, MultipartFile[] image) throws ImageUploadException;
 
-    void deleteProduct(Product product);
+    void deleteProduct(Long productId, String email);
 }
